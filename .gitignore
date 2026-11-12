@@ -1,0 +1,19 @@
+# Dependencias (se instalan con composer install)
+/vendor
+/node_modules
+
+# Configuración local y secretos
+.env
+.env.backup
+*.key
+*.pem
+
+# Archivos generados en tiempo de ejecución
+/storage/*.key
+/public/hot
+/public/storage
+.phpunit.result.cache
+
+# Editores
+/.idea
+/.vscode

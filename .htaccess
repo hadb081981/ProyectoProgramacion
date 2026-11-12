@@ -1,0 +1,39 @@
+# La raíz web es la raíz del proyecto (funciona en XAMPP dentro de una subcarpeta y
+# en hosting compartido). Solo se sirven public/ y el front controller index.php;
+# todo lo demás (código, .env, storage, vendor…) queda bloqueado.
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews
+    </IfModule>
+    Options +FollowSymlinks
+    RewriteEngine On
+
+    # Archivos y carpetas ocultos (.env, .git…), salvo .well-known (certificados SSL).
+    RewriteCond %{REQUEST_URI} !/\.well-known/
+    RewriteRule (^|/)\. - [F,L]
+
+    # Carpetas internas de Laravel.
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor|node_modules)(/|$) - [F,L]
+
+    # Extensiones sensibles fuera de public/.
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule \.(env|sql|zip|gz|tar|key|pem|sh|bat|log|lock|phar|md|json|ya?ml|xml|ini)$ - [F,L,NC]
+
+    # Ningún .php directo salvo el front controller.
+    RewriteRule ^index\.php$ - [L]
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule \.(php[0-9]?|phtml)$ - [F,L,NC]
+
+    # Quitar la barra final.
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # Todo lo demás lo atiende Laravel.
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+Options -Indexes
